@@ -18,30 +18,31 @@ list_2 = [
 
 
 def merge_lists(list_1, list_2) -> list:
-    merged_list = []
-    id_set = set()
-
-    for item in list_1:
-        if item["id"] not in id_set:
-            merged_list.append(item)
-            id_set.add(item["id"])
-        else:
-            for merged_item in merged_list:
-                if merged_item["id"] == item["id"]:
-                    merged_item.update(item)
-                    break
+    list_1.sort(key=lambda x: x["id"])
+    list_2.sort(key=lambda x: x["id"])
     
-    for item in list_2:
-        if item["id"] not in id_set:
-            merged_list.append(item)
-            id_set.add(item["id"])
+    merged_list = []
+    i = j = 0
+    
+    while i < len(list_1) and j < len(list_2):
+        if list_1[i]["id"] == list_2[j]["id"]:
+            merged_item = list_1[i].copy()
+            merged_item.update(list_2[j])
+            merged_list.append(merged_item)
+            i += 1
+            j += 1
+        elif list_1[i]["id"] < list_2[j]["id"]:
+            merged_list.append(list_1[i])
+            i += 1
         else:
-            for merged_item in merged_list:
-                if merged_item["id"] == item["id"]:
-                    merged_item.update(item)
-                    break
+            merged_list.append(list_2[j])
+            j += 1
+    
+    merged_list.extend(list_1[i:])
+    merged_list.extend(list_2[j:])
     
     return merged_list
+
 
 
 list_3 = merge_lists(list_1, list_2)
